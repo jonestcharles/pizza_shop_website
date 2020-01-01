@@ -1,0 +1,39 @@
+{% extends "orders/layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block body %}
+    {% if message %}
+        <div class="m-3 alert alert-info col-sm-2" role="alert">
+            {{ message }}
+        </div>
+    {% endif %}
+    <form action="{% url 'login' %}" method="post" class="ml-3 p-1">
+        {% csrf_token %}
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <label for="un">
+                    Username
+                </label>
+                <input name="username" type="text" id="un">
+            </div>
+            <div class="col-auto">
+                <label for="pw">
+                    Password
+                </label>
+                <input name="password" type="password" id="pw">
+            </div>
+        </div>
+        <div class="form-row">
+            <input type="submit" value="Login">
+        </div>
+    </form>
+    <p class="m-3">
+        Don't have an account?
+        <a href="{% url 'register' %}">
+            Register
+        </a>
+    </p>
+{% endblock %}

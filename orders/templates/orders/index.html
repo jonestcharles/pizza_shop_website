@@ -1,0 +1,148 @@
+{% extends "orders/layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block nav %}
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link" style="color:black;">
+                Logout
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'cart' %}" class="nav-link" style="color:black;">
+                View Cart
+            </a>
+        </li>
+    </ul>
+{% endblock %}
+{% block body %}
+    <p class="ml-3">
+        Welcome to our site! Please view our menu and place your order.
+    </p>
+    {% if success %}
+        <div class="alert alert-success m-3 col-sm-2" role="alert">
+            {{ success }}
+        </div>
+    {% endif %}
+    <h2 class="ml-3">
+        Menu
+    </h2>
+    {% for category in categories %}
+        <h3 class="ml-3">
+            {{ category }}
+        </h3>
+        {% for dish in dishes %}
+            {% if dish.category == category %}
+                <div class="row m-3 p-1">    
+                    <div class="col-sm-4">
+                        {{ dish }}
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-secondary btn-sm reveal" data-form="{{ dish.pk }}">
+                            Order
+                        </button>
+                    </div>
+                </div>
+                <form action="{% url 'add_to_cart' %}" method="post" data-toppings="{{ dish.num_toppings }}" 
+                    data-category= "{{ category.pk }}" onsubmit="event.preventDefault(); addToCartValidate(this);"
+                    class="ml-3 border border-danger p-1" id="form-{{ dish.pk }}" hidden>
+                    {% csrf_token %} 
+                    <input name="dish" value="{{ dish.pk }}" hidden required/>
+                    <button type="button" class="close" aria-label="Close" data-form="{{ dish.pk }}">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    {% if category.toppings.all|length > 0 %}
+                        {% if category.name != "Subs" %}
+                            {% if dish.name != "Cheese" %}
+                                <fieldset class="toppings-list" id="{{ dish.num_toppings }}">
+                                    <legend class="col-form-label col-sm-2 pt-0">
+                                        Toppings
+                                    </legend>
+                                    <div class="col-sm-10">
+                                        {% for topping in category.toppings.all %}
+                                            <div class="form-check-inline">
+                                                <input type="checkbox" name="toppings" 
+                                                    value ="{{ topping.pk }}" id="{{ dish.pk }}-{{ topping.pk }}" class="form-check-input">
+                                                <label for ="{{ dish.pk }}-{{ topping.pk }}" class="form-check-label">
+                                                    {{ topping }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                        </div>
+                                </fieldset>
+                            {% endif %}
+                        {% else %}
+                            <fieldset class="toppings-list form-group" id="{{ dish.num_toppings }}">
+                                <legend class="col-form-label col-sm-2 pt-0">
+                                    Toppings
+                                </legend>
+                                {% if dish.num_toppings > 1 %}
+                                    <div class="col-sm-10">
+                                        {% for topping in category.toppings.all %}
+                                        <div class="form-check-inline">
+                                            <input type="checkbox" name="toppings" 
+                                                value="{{ topping.pk }}" id="{{ dish.pk }}-{{ topping.pk }}" class="form-check-input">
+                                            <label for="{{ dish.pk }}-{{ topping.pk }}" class="form-check-label">
+                                                {{ topping }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="col-sm-10">
+                                        {% for topping in category.toppings.all %}
+                                            {% if not topping.is_steak_and_cheese %}
+                                                <div class="form-check-inline">
+                                                    <input type="checkbox" name="toppings" value="{{ topping.pk }}" 
+                                                        id="{{ dish.pk }}-{{ topping.pk }}" class="form-check-input">
+                                                    <label for="{{ dish.pk }}-{{ topping.pk }}" class="form-check-label">
+                                                        {{ topping }}
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </fieldset>
+                        {% endif %}
+                    {% endif %}
+                    <div class="form-group row no-gutters">
+                        {% if dish.small_price %}
+                            <div class="col-auto m-1">
+                                <label for="{{ dish.pk }}-sz">
+                                    Size
+                                </label>
+                            </div>
+                            <div class="col-auto m-1">
+                                <select id="{{ dish.pk }}-sz" name="size" class="custom-select custom-select-sm" required>
+                                    <option value="SM">
+                                        Small
+                                    </option>
+                                    <option value="LG">
+                                        Large
+                                    </option>
+                                </select>
+                            </div>
+                        {% else %}
+                            <input name="size" value="LG" hidden required />
+                        {% endif %}
+                        <div class="col-auto m-1">
+                            <label for="{{ dish.pk }}-quan">
+                                Quantity
+                            </label>
+                            <input id="{{ dish.pk }}-quan" type="number" name="quantity" value="1" min="1"/>
+                        </div>
+                    </div>
+                    <div class="btn btn-light">
+                        <button type="submit" value="Add to Cart" class="add-to-cart">
+                            Add to Cart
+                        </button>
+                    </div>
+                </form>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endblock %}

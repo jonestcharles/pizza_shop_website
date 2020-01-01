@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>
+            Thank you for your order!
+        </h1>
+        <p>
+            {% if user.first_name %}
+                {{ user.first_name }},
+            {% else %}
+                {{ user.username }}
+            {% endif %}
+        </p>
+        <br>
+        <p>
+            Your pizza is being prepared, and will be ready in 2400 seconds!
+        </p>
+        <ul>
+            <lh>
+                {{ order }}: ${{ order.total }}
+            </lh>
+            {% for item in order.items.all %}
+                <li>
+                    {{ item }}
+                    <ul>
+                        <lh>
+                            Toppings:
+                        </lh>
+                        {% for topping in item.toppings.all %}
+                            <li>
+                                {{ topping }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    <p>
+        Sincerely,
+    </p>
+    <p>
+        The Pinnochio's Pizza team
+    </p>
+    </body>
+</html>

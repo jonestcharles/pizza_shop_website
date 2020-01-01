@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h1>
+            Welcome to Pinocchio's Pizza {% if user.first_name %}{{ user.first_name }}!{% else %}{{ user.username }}{% endif %}
+        </h1>
+        <p>
+            Please visit us in our shop, or go <a href="{% url 'index' %}">
+                online
+            </a> to order some pizza!
+        </p>
+        <br>
+        <p>
+            Sincerely,
+        </p>
+        <p>
+            The Pinnochio's Pizza team
+        </p>
+    </body>
+</html>

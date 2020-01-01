@@ -1,0 +1,40 @@
+{% extends "orders/layout.html" %}
+
+{% block title %}
+    Thank You
+{% endblock %}
+{% block nav %}
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link" style="color:black;">
+                Logout
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'index' %}" class="nav-link" style="color:black;">
+                    Order More Pizza
+            </a>
+        </li>
+    </ul>
+{% endblock %}
+{% block body %}
+    <h2 class="ml-3">
+        Thank you for your order! You'll recieve a confirmation email soon.
+    </h2>
+    <p class="m-3">
+        {{ order }} is on its way!
+    </p>
+    <p class="m-3">
+        Total: ${{ order.total }}
+    </p>
+    <ul class="m-3">
+        <lh>
+            Items:
+        </lh>
+        {% for item in order.items.all %}
+            <li class="m-2">
+                {{ item }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
